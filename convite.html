@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espero que goste do convite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0A0F1E;
+            --bg-sec: #0F1628;
+            --gold: #E8C878;
+            --text-light: #FDFBF7;
+            --soft-blue: #607AF2;
+            --gold-border: rgba(212, 175, 55, 0.2);
+            --blue-glow: rgba(60, 80, 200, 0.4);
+            
+            --font-title: 'Cormorant Garamond', serif;
+            --font-text: 'Montserrat', sans-serif;
+            --font-script: 'Great Vibes', cursive;
+            
+            --transition-speed: 0.8s;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            font-family: var(--font-text);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container Principal */
+        #app {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            position: relative;
+            background-color: var(--bg-deep);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .book {
+                height: 90vh;
+                border: 1px solid var(--gold-border);
+                border-radius: 4px;
+            }
+        }
+
+        /* Páginas */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateZ(-100px) rotateY(10deg);
+            transition: opacity var(--transition-speed) ease, 
+                        transform var(--transition-speed) ease, 
+                        visibility var(--transition-speed);
+            background-color: var(--bg-deep);
+            z-index: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateZ(0) rotateY(0);
+            z-index: 2;
+        }
+
+        .page.prev {
+            transform: translateZ(-100px) rotateY(-10deg);
+        }
+
+        /* Molduras e Ornamentos */
+        .frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .page.active .frame {
+            animation: drawFrame 1.5s ease forwards;
+        }
+
+        @keyframes drawFrame {
+            0% { border-color: transparent; }
+            100% { border-color: var(--gold-border); }
+        }
+
+        .ornament {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .page.active .ornament {
+            animation: fadeUp 1s ease 0.5s forwards;
+        }
+
+        /* Tipografia */
+        h1, h2, h3 {
+            font-family: var(--font-title);
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; }
+        h2 { font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
+        h3 { font-size: 1.4rem; color: var(--text-light); margin-bottom: 1rem; }
+
+        .script-text {
+            font-family: var(--font-script);
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: rgba(253, 251, 247, 0.85);
+        }
+
+        .category-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Animações de Texto */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .page.active .fade-up {
+            animation: fadeUp 1s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.3s; }
+        .delay-2 { animation-delay: 0.6s; }
+        .delay-3 { animation-delay: 0.9s; }
+        .delay-4 { animation-delay: 1.2s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Botões */
+        .btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: var(--font-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px var(--blue-glow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--bg-deep);
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background: #f0d592;
+            color: var(--bg-deep);
+        }
+
+        /* Imagens */
+        .image-container {
+            width: 100%;
+            height: 250px;
+            margin: 1.5rem 0;
+            position: relative;
+            border: 1px solid var(--gold-border);
+            padding: 5px;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .page.active .image-container {
+            animation: scaleIn 1.2s ease 0.4s forwards;
+        }
+
+        @keyframes scaleIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8) contrast(1.1);
+            transition: filter 0.5s ease, transform 5s ease;
+        }
+
+        .image-container:hover img {
+            filter: brightness(1) contrast(1);
+            transform: scale(1.05);
+        }
+        
+        .image-overflow {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .image-fallback {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-sec);
+            justify-content: center;
+            align-items: center;
+            color: var(--gold);
+            font-family: var(--font-title);
+            font-style: italic;
+        }
+
+        /* Múltiplas imagens (Página 8) */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+        
+        .grid-2 .image-container {
+            height: 180px;
+        }
+
+        /* Navegação Inferior */
+        .nav-controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .nav-controls.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--gold);
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .nav-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+        }
+
+        .page-indicator {
+            font-family: var(--font-text);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: rgba(253, 251, 247, 0.6);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gold);
+            width: 0%;
+            transition: width 0.5s ease;
+            z-index: 10;
+        }
+
+        /* Ajustes Específicos */
+        .letter-content {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 90%;
+        }
+        
+        .letter-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .menu-list li {
+            font-family: var(--font-title);
+            font-size: 1.4rem;
+            color: rgba(253, 251, 247, 0.9);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .menu-list li::after {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 1px;
+            background: var(--gold-border);
+            margin: 0.5rem auto 0;
+        }
+        
+        .menu-list li:last-child::after {
+            display: none;
+        }
+
+        .divider {
+            width: 1px;
+            height: 40px;
+            background: var(--gold);
+            margin: 1.5rem auto;
+        }
+
+        .horizontal-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin: 1.5rem auto;
+        }
+
+        /* Acessibilidade - Movimento Reduzido */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="book">
+            
+            <!-- Página 1: Capa -->
+            <div class="page active" id="page-0">
+                <div class="frame">
+                    <span class="category-label fade-up">09.10.2026</span>
+                    <h1 class="script-text fade-up delay-1">Tiago</h1>
+                    <div class="horizontal-divider fade-up delay-2"></div>
+                    <p class="fade-up delay-2">Espero que goste do convite</p>
+                    <p class="category-label fade-up delay-3">20h30</p>
+                    <button class="btn fade-up delay-4" onclick="nextPage()">Abrir convite</button>
+                </div>
+            </div>
+
+            <!-- Página 2: Carta -->
+            <div class="page" id="page-1">
+                <div class="frame">
+                    <div class="letter-content">
+                       <p class="fade-up delay-1">Eu queria preparar algo em uma data qualquer para te mostrar que todo dia desde que começamos a namorar é especial para mim.</p>
+<p class="fade-up delay-2">Preparei um cardápio inteiro com receitas que criei, menos o camarão, que é receita da minha prima.</p>
+<p class="fade-up delay-3">E espero que tudo te agrade.</p>
+<p class="fade-up delay-4">Espero você às 20h30.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página 3: Os detalhes -->
+            <div class="page" id="page-2">
+                <div class="frame">
+                    <h2 class="fade-up">Os Detalhes</h2>
+                    <div class="divider fade-up delay-1"></div>
+                    <p class="category-label fade-up delay-2">Data</p>
+                    <h3 class="fade-up delay-2">Sexta-feira, 9 de outubro de 2026</h3>
+                    <p class="category-label fade-up delay-3" style="margin-top: 1.5rem;">Horário</p>
+                    <h3 class="fade-up delay-3">20h30 às 21h30</h3>
+                    <p class="category-label fade-up delay-4" style="margin-top: 1.5rem;">Formato</p>
+                    <h3 class="fade-up delay-4">Jantar a dois</h3>
+                    <div class="horizontal-divider fade-up delay-4"></div>
+                    <p class="fade-up delay-4" style="font-style: italic; font-family: var(--font-title); color: var(--gold);">"Primeira noite que preparo tudo e espero fazer isso por toda sua vida."</p>
+                </div>
+            </div>
+
+            <!-- Página 4: Abertura do Menu -->
+            <div class="page" id="page-3">
+                <div class="frame">
+                    <span class="ornament fade-up">✦</span>
+                    <h2 class="fade-up delay-1">Menu da Noite</h2>
+                    <p class="fade-up delay-2" style="font-style: italic; font-family: var(--font-title);">"me lembra de explicar o porquê da sequência."</p>
+                    
+                    <ul class="menu-list fade-up delay-3">
+                        <li>Entrada</li>
+                        <li>Prato Principal</li>
+                        <li>Sobremesa</li>
+                    </ul>
+                    
+                    <p class="category-label fade-up delay-4" style="margin-top: 3rem; font-size: 0.6rem;">Avança para o cardápio, hihi</p>
+                </div>
+            </div>
+
+            <!-- Página 5: Entrada -->
+            <div class="page" id="page-4">
+                <div class="frame" style="padding: 1rem;">
+                    <p class="category-label fade-up">Primeiro Ato &middot; Entrada</p>
+                    <h2 class="fade-up delay-1" style="font-size: 1.5rem; text-transform: none;">Bruschettas Rústicas de Cogumelos</h2>
+                    
+                    <div class="image-container">
+                        <div class="image-overflow">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBHglTx8HzTtZv6GhssxEIJgqbnG1hU2WI8hS1JEEAjMXDHLtXnM3Pa1gq&s=10" 
+                                 alt="Bruschettas rústicas com tomates e cogumelos" 
+                                 loading="lazy"
+                                 onerror="handleImageError(this)">
+                            <div class="image-fallback">Imagem Indisponível</div>
+                        </div>
+                    </div>
+                    
+                    <p class="fade-up delay-2" style="font-size: 0.85rem;">Pão tostado com alho cru, passata espessa de tomate-cereja, lâminas de cogumelos Paris na manteiga e folhas frescas de coentro.</p>
+                </div>
+            </div>
+
+            <!-- Página 6: Prato Principal 1 -->
+            <div class="page" id="page-5">
+                <div class="frame" style="padding: 1rem;">
+                    <p class="category-label fade-up">Segundo Ato &middot; Prato Principal</p>
+                    <h2 class="fade-up delay-1" style="font-size: 1.5rem; text-transform: none;">Camarão ao Molho Branco Gratinado</h2>
+                    
+                    <div class="image-container">
+                        <div class="image-overflow">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVLRlzcTWJBSPIusfp5fN51BZQpqoUdYmiTTrQY1p7rLtElzLg7MZtcs6c&s=10" 
+                                 alt="Camarão cremoso e gratinado" 
+                                 loading="lazy"
+                                 onerror="handleImageError(this)">
+                            <div class="image-fallback">Imagem Indisponível</div>
+                        </div>
+                    </div>
+                    
+                    <p class="fade-up delay-2" style="font-size: 0.85rem;">Camarões selados em molho cremoso perfumado com noz-moscada e raspas de limão, coberto por uma crosta borbulhante de queijos muçarela e parmesão. Acompanha arroz branco.</p>
+                </div>
+            </div>
+
+            <!-- Página 7: Prato Principal 2 -->
+            <div class="page" id="page-6">
+                <div class="frame" style="padding: 1rem;">
+                    <p class="category-label fade-up">Frescor &middot; Prato Principal</p>
+                    <h2 class="fade-up delay-1" style="font-size: 1.5rem; text-transform: none;">Ceviche Fresco de Pescada-Amarela e Palmito</h2>
+                    
+                    <div class="image-container">
+                        <div class="image-overflow">
+                            <img src="https://www.laylita.com/receitas/wp-content/uploads/2016/02/Ceviche-de-Peixe.jpg" 
+                                 alt="Ceviche fresco de peixe branco" 
+                                 loading="lazy"
+                                 onerror="handleImageError(this)">
+                            <div class="image-fallback">Imagem Indisponível</div>
+                        </div>
+                    </div>
+                    
+                    <p class="fade-up delay-2" style="font-size: 0.85rem;">Lâminas de peixe branco e palmito marinados no limão com um leve toque de molho inglês, cebola roxa, pimenta dedo-de-moça, coentro e finalizado com castanhas-de-caju tostadas.</p>
+                </div>
+            </div>
+
+            <!-- Página 8: Sobremesa e Harmonização -->
+            <div class="page" id="page-7">
+                <div class="frame" style="padding: 1rem; justify-content: flex-start; padding-top: 2rem;">
+                    
+                    <p class="category-label fade-up" style="margin-bottom: 0.2rem;">Último Ato &middot; Sobremesa</p>
+                    <h2 class="fade-up delay-1" style="font-size: 1.2rem; text-transform: none; margin-bottom: 1rem;">Ganache Intensa na Xícara</h2>
+                    
+                    <div class="grid-2">
+                        <div class="image-container" style="margin: 0;">
+                            <div class="image-overflow">
+                                <img src="https://s2-receitas.glbimg.com/mm6xLR93sy_qAFXUy4y22J3ikqY=/0x0:1366x768/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_1f540e0b94d8437dbbc39d567a1dee68/internal_photos/bs/2024/O/4/Cxfq68SEWAuE46CYEjRg/ganache-de-chocolate-meio-amargo-receitas.jpg" 
+                                     alt="Ganache de chocolate densa na xícara" 
+                                     loading="lazy"
+                                     onerror="handleImageError(this)">
+                                <div class="image-fallback">Imagem Indisponível</div>
+                            </div>
+                        </div>
+                        <div class="image-container" style="margin: 0;">
+                            <div class="image-overflow">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShd8RuKEk9Jk32LYKrEN4gRrhMTff_kfuSDwf3DxQLKw&s=10" 
+                                     alt="Taça de vinho branco elegante" 
+                                     loading="lazy"
+                                     onerror="handleImageError(this)">
+                                <div class="image-fallback">Imagem Indisponível</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="fade-up delay-2" style="font-size: 0.75rem; margin-top: 1rem;">Creme denso de chocolate meio amargo, finalizado com o contraste doce e picante da geleia de pimenta e farofa crocante de castanha-de-caju.</p>
+                    
+                    <div class="horizontal-divider fade-up delay-3" style="margin: 1rem auto;"></div>
+                    
+                    <p class="category-label fade-up delay-3" style="margin-bottom: 0.2rem;">Para Harmonizar</p>
+                    <h2 class="fade-up delay-3" style="font-size: 1.1rem; text-transform: none;">Vinho Branco Chileno Suave</h2>
+                    
+                    <p class="fade-up delay-4" style="font-style: italic; font-family: var(--font-title); color: var(--gold); margin-top: 1rem; font-size: 1.1rem;">"Eu fiz tudo que tá na mesa: farofa, creme e a geleia de pimenta que você tanto comenta."</p>
+
+                </div>
+            </div>
+
+            <!-- Página 9: Confirmação -->
+            <div class="page" id="page-8">
+                <div class="frame">
+                    <span class="ornament fade-up">✦</span>
+                    <h2 class="fade-up delay-1" style="text-transform: none;">meu idem, você aceita o convite?</h2>
+                    
+                    <div class="divider fade-up delay-2"></div>
+                    
+                    <p class="category-label fade-up delay-2">09 de outubro de 2026</p>
+                    <p class="category-label fade-up delay-2">Das 20h30 às 21h30</p>
+                    
+                      <div class="divider fade-up delay-2"></div>
+
+                    <a href="https://wa.me/55933004019?text=aceito" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="btn btn-primary fade-up delay-4"
+                       style="margin-top: 1.5rem;">
+                        Aceitar convite
+                    </a>
+                </div>
+            </div>
+
+            <!-- Controles de Navegação -->
+            <div class="nav-controls" id="nav-controls">
+                <button class="nav-btn" id="btn-prev" onclick="prevPage()" aria-label="Página anterior">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <span class="page-indicator" id="page-indicator">01 / 09</span>
+                
+                <button class="nav-btn" id="btn-next" onclick="nextPage()" aria-label="Próxima página">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="progress-bar" id="progress-bar"></div>
+
+        </div>
+    </div>
+
+    <script>
+        const totalPages = 9;
+        let currentPage = 0;
+
+        const navControls = document.getElementById('nav-controls');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const pageIndicator = document.getElementById('page-indicator');
+        const progressBar = document.getElementById('progress-bar');
+
+        function updateNavigation() {
+            // Atualizar classes das páginas
+            for (let i = 0; i < totalPages; i++) {
+                const page = document.getElementById(`page-${i}`);
+                if (i === currentPage) {
+                    page.className = 'page active';
+                } else if (i < currentPage) {
+                    page.className = 'page prev';
+                } else {
+                    page.className = 'page';
+                }
+            }
+
+            // Mostrar/esconder controles na capa
+            if (currentPage === 0) {
+                navControls.classList.remove('visible');
+            } else {
+                navControls.classList.add('visible');
+            }
+
+            // Atualizar botões
+            btnPrev.disabled = currentPage <= 1; // Não volta pra capa usando seta, pra capa só recarregando ou se quiser podemos permitir. Permitiremos voltar até a página 1 (carta). A capa é entrada única.
+            btnNext.disabled = currentPage === totalPages - 1; // Desabilita avançar na última
+
+            // Atualizar indicador
+            const pageNum = (currentPage + 1).toString().padStart(2, '0');
+            const totalNum = totalPages.toString().padStart(2, '0');
+            pageIndicator.textContent = `${pageNum} / ${totalNum}`;
+
+            // Atualizar barra de progresso
+            const progress = (currentPage / (totalPages - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updateNavigation();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updateNavigation();
+            }
+        }
+
+        // Tratamento de falha de imagens
+        function handleImageError(imgElement) {
+            imgElement.style.display = 'none';
+            const fallback = imgElement.nextElementSibling;
+            if (fallback && fallback.classList.contains('image-fallback')) {
+                fallback.style.display = 'flex';
+            }
+        }
+
+        // Gestos de deslizar para mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 50;
+
+        document.getElementById('app').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.getElementById('app').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            if (currentPage === 0) return; // Não permite deslizar na capa
+            
+            const difference = touchStartX - touchEndX;
+            if (Math.abs(difference) > swipeThreshold) {
+                if (difference > 0) {
+                    // Deslizou para a esquerda (avançar)
+                    nextPage();
+                } else {
+                    // Deslizou para a direita (voltar)
+                    prevPage();
+                }
+            }
+        }
+
+        // Suporte a teclado
+        document.addEventListener('keydown', (e) => {
+            if (currentPage === 0) return;
+            
+            if (e.key === 'ArrowRight') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
+
+        // Inicializar
+        updateNavigation();
+    </script>
+</body>
+</html>
